@@ -1,0 +1,73 @@
+data:
+  max_length: 500
+
+  label_params:
+    forecast_intervals_ms: [2560] #0.16s to 2.56s
+    context_in_sec: 40.0
+    extra_offset: 10.0
+    use_fixed_context_training: True
+    use_random_start: True
+
+#https://huggingface.co/nvidia/stt_en_fastconformer_hybrid_large_streaming_multi
+  audio_params:
+    audio_feature: fastconformer_streaming
+    target_sr: 16000
+    model_repo: nvidia/stt_en_fastconformer_hybrid_large_streaming_multi
+    feat_size: 512
+    freq: 12.6
+    att_context_size: [70,0]  
+    upsample: false
+
+  text_delim: "_##_"
+
+forecast: true
+endpoint: false
+
+data_config: /mnt/matylda4/udupa/exps/endpointing/NAC-LD-Endpointer/configs/data/data_mix_2.yaml
+
+model:
+  name: fc_base_transformer
+  remove_forecast_on_short_frames:
+    apply: true
+    min_segment_ms: 2000
+  loss_weight_factors: 
+    non_forecast_frames: 0.1
+    forecast_frames: 1.0
+
+model_params:
+  two_stream: True
+  num_layers: 6
+  hidden_size: 512  
+  dropout: 0.1
+  num_heads: 4
+  dim_feedforward: 1024
+  context: 240
+  positional_embedding: "rope"
+  max_period: 1000.0
+  # temporal_window: 50
+  
+run_params:
+  device: cuda
+  epochs: 50
+  batch_size: 16
+  lr: 0.0003
+  load_checkpoint: False
+  loss_fn: frame_level_binary_cross_entropy
+  save_folder: /mnt/matylda4/udupa/exps/endpointing/NAC-LD-Endpointer/checkpoints
+  overwrite_prev_run: True
+  early_stopping: True
+  early_stopping_patience: 6
+  save_best_from_val_loss: False
+  save_best_from_val_acc: True
+  epoch_save_interval: 1
+  epoch_save_all: False
+  log_img_to_wandb: True 
+  asr_scores_save_filename: asr_offline_scores.pt
+  ep_cutoff_save_filename: ep_cutoff.pt
+  latency_save_filename: median_latency.pt
+  compile_model: False
+
+wandb:
+  wandb_project: 
+  use_wandb: False
+
