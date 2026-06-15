@@ -6,19 +6,21 @@ Processes one or two audio files (user stream + optional system stream) through
 the Mimi encoder and anticipation transformer, and outputs per-frame endpoint
 probabilities.
 
+By default, the pretrained checkpoint and config are downloaded automatically
+from HuggingFace (viks66/endpoint-anticipation).
+
 Usage:
-    # Dual-stream (user + system audio separate)
-    python infer.py --config configs/forecasting/mimi/fc2560_transformer_mimi_12.5hz_loss1-01_m3.yaml \
-                    --checkpoint /path/to/checkpoints/<run_name>/best_val_acc.pt \
+    # Using pretrained checkpoint from HuggingFace (default)
+    python infer.py --user_audio user.wav --system_audio system.wav --plot out.png
+
+    # Dual-stream with a local checkpoint
+    python infer.py --config configs/forecasting/mimi/fc960_transformer_mimi_12.5hz_loss1-01_m3.yaml \
+                    --checkpoint /path/to/best_val_acc.pt \
                     --user_audio user.wav \
-                    --system_audio system.wav \
-                    --output predictions.json
+                    --system_audio system.wav
 
     # Single-stream (zero-filled system stream)
-    python infer.py --config configs/forecasting/mimi/fc2560_transformer_mimi_12.5hz_loss1-01_m3.yaml \
-                    --checkpoint /path/to/best_val_acc.pt \
-                    --user_audio audio.wav \
-                    --output predictions.json
+    python infer.py --user_audio audio.wav --output predictions.json
 """
 
 from __future__ import annotations
@@ -32,6 +34,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torchaudio
+from huggingface_hub import hf_hub_download
 from moshi.models import loaders
 
 from src.utils.common import load_config, fc_base_transformer
@@ -40,8 +43,20 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger(__name__)
 
 MIMI_HF_REPO = "kyutai/mimi"
+ANTICIPATION_HF_REPO = "viks66/endpoint-anticipation"
 MIMI_CHUNK_SIZE = 1920   # 80ms at 24kHz
 MAX_CONTEXT_STEPS = 240  # ~19.2 seconds of rolling context
+
+
+def resolve_from_hf(config_path: str | None, checkpoint_path: str | None) -> tuple[str, str]:
+    """Download config and checkpoint from HuggingFace if not provided locally."""
+    if config_path is None:
+        logger.info("Downloading config from %s", ANTICIPATION_HF_REPO)
+        config_path = hf_hub_download(repo_id=ANTICIPATION_HF_REPO, filename="config.yaml")
+    if checkpoint_path is None:
+        logger.info("Downloading checkpoint from %s", ANTICIPATION_HF_REPO)
+        checkpoint_path = hf_hub_download(repo_id=ANTICIPATION_HF_REPO, filename="best_val_acc.pt")
+    return config_path, checkpoint_path
 
 
 def load_audio(path: str, target_sr: int) -> np.ndarray:
@@ -209,8 +224,8 @@ def plot_predictions(
 
 def main():
     parser = argparse.ArgumentParser(description="Endpoint anticipation offline inference")
-    parser.add_argument("--config", required=True, help="Model config YAML (e.g. configs/forecasting/mimi/fc2560_...yaml)")
-    parser.add_argument("--checkpoint", required=True, help="Path to model checkpoint (.pt)")
+    parser.add_argument("--config", default=None, help="Model config YAML. Downloaded from HuggingFace if omitted.")
+    parser.add_argument("--checkpoint", default=None, help="Path to model checkpoint (.pt). Downloaded from HuggingFace if omitted.")
     parser.add_argument("--user_audio", required=True, help="User audio file (WAV)")
     parser.add_argument("--system_audio", default=None, help="System audio file (WAV). If omitted, zero stream is used.")
     parser.add_argument("--threshold", type=float, default=0.5, help="Probability threshold for endpoint detection")
@@ -222,11 +237,12 @@ def main():
     device = torch.device(args.device if args.device else ("cuda" if torch.cuda.is_available() else "cpu"))
     logger.info("Using device: %s", device)
 
-    cfg = load_config([args.config])
+    config_path, checkpoint_path = resolve_from_hf(args.config, args.checkpoint)
+    cfg = load_config([config_path])
     target_sr = cfg.data.audio_params.target_sr
 
     mimi = load_mimi(device)
-    model = load_model(cfg, args.checkpoint, device)
+    model = load_model(cfg, checkpoint_path, device)
 
     logger.info("Loading user audio from %s", args.user_audio)
     user_audio = load_audio(args.user_audio, target_sr)
@@ -246,8 +262,8 @@ def main():
     logger.info("Inference complete: %d frames, %d endpoint detections", len(predictions), len(detected))
 
     result = {
-        "config": args.config,
-        "checkpoint": args.checkpoint,
+        "config": config_path,
+        "checkpoint": checkpoint_path,
         "threshold": args.threshold,
         "audio_duration_s": round(len(user_audio) / target_sr, 3),
         "n_frames": len(predictions),
