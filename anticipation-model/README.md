@@ -162,6 +162,8 @@ Outputs saved to `output_dir/`:
 
 The plot shows user (blue) and system (orange) audio streams with the anticipation probability curve (green, right axis). Stars mark frames where the probability crosses the threshold on a rising edge — i.e. the model anticipates an upcoming end-of-turn.
 
+> **Note:** This sample is from **out-of-domain** audio taken from [Full Duplex Bench v1](https://github.com/kyutai-labs/full-duplex-bench). The model was not trained on this data.
+
 ---
 
 ## Pretrained Checkpoints
