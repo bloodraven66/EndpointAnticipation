@@ -1,16 +1,19 @@
+# Inference only (infer.py)
 torch
 torchaudio
 moshi
 numpy
+matplotlib
+PyYAML
+huggingface_hub
+
+# Training (run.py)
 librosa
 scikit-learn
-matplotlib
 tqdm
 wandb
 easydict
 coloredlogs
-PyYAML
-huggingface_hub
 
 # Required only for NeMo-based configs (configs/forecasting/nemo/)
 # nemo_toolkit[asr]
