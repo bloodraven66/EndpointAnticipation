@@ -41,6 +41,7 @@ import yaml
 from huggingface_hub import hf_hub_download
 from moshi.models import loaders
 from moshi.modules.transformer import StreamingTransformer
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -171,7 +172,7 @@ def run_inference(
     zero_embed: torch.Tensor | None = None
     predictions: list[dict] = []
 
-    for i in range(n_chunks):
+    for i in tqdm(range(n_chunks), desc="Streaming inference", unit="chunk"):
         s, e = i * MIMI_CHUNK_SIZE, (i + 1) * MIMI_CHUNK_SIZE
 
         user_embed = encode_chunk(mimi, user_audio[s:e], device)
@@ -284,7 +285,7 @@ def main():
     else:
         logger.info("Mono audio detected: system stream will be zero-filled")
 
-    logger.info("Running inference on %.2f seconds of audio", len(user_audio) / target_sr)
+    logger.info("Running streaming inference on %.2f seconds of audio", len(user_audio) / target_sr)
     predictions = run_inference(mimi, model, user_audio, system_audio, device, args.threshold, target_sr)
 
     detected = [p for p in predictions if p["endpoint_detected"]]

@@ -6,6 +6,7 @@ numpy
 matplotlib
 PyYAML
 huggingface_hub
+tqdm
 
 # Training (run.py)
 librosa
