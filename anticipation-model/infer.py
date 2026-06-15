@@ -11,13 +11,13 @@ from HuggingFace (viks66/endpoint-anticipation).
 
 Usage:
     # 2-channel audio: channel 0 = user, channel 1 = system
-    python infer.py --audio conversation.wav --plot out.png
+    python infer.py --audio conversation.wav --plot
 
     # 1-channel audio: user only, system stream zero-filled
-    python infer.py --audio user.wav --output predictions.json
+    python infer.py --audio user.wav --output_dir results/
 
     # With a local checkpoint
-    python infer.py --audio conversation.wav \
+    python infer.py --audio conversation.wav --plot \
                     --config configs/forecasting/mimi/fc960_transformer_mimi_12.5hz_loss1-01_m3.yaml \
                     --checkpoint /path/to/best_val_acc.pt
 
@@ -225,20 +225,35 @@ def plot_predictions(
     times = np.array([p["time_s"] for p in predictions])
     probs = np.array([p["probability"] for p in predictions])
     audio_times = np.arange(len(user_audio)) / target_sr
+    duration = audio_times[-1]
 
     fig, ax_audio = plt.subplots(figsize=(14, 3))
 
+    # Waveforms
     ax_audio.plot(audio_times, user_audio, color="#2196F3", alpha=0.45, linewidth=0.6, label="User")
     if system_audio is not None:
         ax_audio.plot(audio_times, system_audio, color="#FF5722", alpha=0.45, linewidth=0.6, label="System")
     ax_audio.set_xlabel("Time (s)")
     ax_audio.set_ylabel("Amplitude", color="#555555")
     ax_audio.tick_params(axis="y", labelcolor="#555555")
-    ax_audio.set_xlim(audio_times[0], audio_times[-1])
+    ax_audio.set_xlim(0, duration)
 
+    # Dotted vertical lines every 0.5s
+    for t in np.arange(0.5, duration, 0.5):
+        ax_audio.axvline(t, color="#aaaaaa", linewidth=0.5, linestyle=":", zorder=1)
+
+    # Anticipation probabilities (right y-axis)
     ax_prob = ax_audio.twinx()
     ax_prob.plot(times, probs, color="#4CAF50", linewidth=1.4, label="Anticipation prob", zorder=3)
     ax_prob.axhline(threshold, color="#4CAF50", linewidth=0.8, linestyle="--", alpha=0.6)
+
+    # Stars on rising edge crossings (prob goes from below to above threshold)
+    rising = (probs[1:] >= threshold) & (probs[:-1] < threshold)
+    star_times = times[1:][rising]
+    star_probs = probs[1:][rising]
+    if len(star_times):
+        ax_prob.scatter(star_times, star_probs, marker="*", color="#FF9800", s=120, zorder=5, label="Anticipated")
+
     ax_prob.set_ylabel("Anticipation probability", color="#4CAF50")
     ax_prob.tick_params(axis="y", labelcolor="#4CAF50")
     ax_prob.set_ylim(0, 1)
@@ -262,9 +277,9 @@ def main():
     parser.add_argument("--config", default=None, help="Model config YAML. Downloaded from HuggingFace if omitted.")
     parser.add_argument("--checkpoint", default=None, help="Checkpoint path (.pt). Downloaded from HuggingFace if omitted.")
     parser.add_argument("--audio", required=True, help="Audio file (WAV). 2-channel: ch0=user, ch1=system. Mono: user only, system zero-filled.")
-    parser.add_argument("--threshold", type=float, default=0.5, help="Probability threshold for endpoint detection")
-    parser.add_argument("--output", default=None, help="Path to save predictions JSON. Prints to stdout if omitted.")
-    parser.add_argument("--plot", default=None, help="Path to save prediction plot (PNG).")
+    parser.add_argument("--threshold", type=float, default=0.5, help="Probability threshold for anticipation")
+    parser.add_argument("--output_dir", default="output", help="Directory to save predictions JSON and plot.")
+    parser.add_argument("--plot", action="store_true", help="Save prediction plot to output_dir.")
     parser.add_argument("--device", default=None, help="Device override (cuda / cpu). Auto-detected if omitted.")
     args = parser.parse_args()
 
@@ -288,8 +303,11 @@ def main():
     logger.info("Running streaming inference on %.2f seconds of audio", len(user_audio) / target_sr)
     predictions = run_inference(mimi, model, user_audio, system_audio, device, args.threshold, target_sr)
 
-    detected = [p for p in predictions if p["endpoint_anticipated"]]
-    logger.info("Inference complete: %d frames, %d endpoint detections", len(predictions), len(detected))
+    n_anticipated = sum(1 for p in predictions if p["endpoint_anticipated"])
+    logger.info("Inference complete: %d frames, %d anticipations", len(predictions), n_anticipated)
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    stem = os.path.splitext(os.path.basename(args.audio))[0]
 
     result = {
         "config": config_path,
@@ -297,19 +315,18 @@ def main():
         "threshold": args.threshold,
         "audio_duration_s": round(len(user_audio) / target_sr, 3),
         "n_frames": len(predictions),
-        "n_detections": len(detected),
+        "n_anticipated": n_anticipated,
         "predictions": predictions,
     }
 
-    if args.output:
-        with open(args.output, "w") as f:
-            json.dump(result, f, indent=2)
-        logger.info("Predictions saved to %s", args.output)
-    else:
-        print(json.dumps(result, indent=2))
+    json_path = os.path.join(args.output_dir, f"{stem}_predictions.json")
+    with open(json_path, "w") as f:
+        json.dump(result, f, indent=2)
+    logger.info("Predictions saved to %s", json_path)
 
     if args.plot:
-        plot_predictions(predictions, user_audio, system_audio, target_sr, args.threshold, args.plot)
+        plot_path = os.path.join(args.output_dir, f"{stem}_plot.png")
+        plot_predictions(predictions, user_audio, system_audio, target_sr, args.threshold, plot_path)
 
 
 if __name__ == "__main__":
