@@ -45,7 +45,7 @@ from moshi.modules.transformer import StreamingTransformer
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-MIMI_HF_REPO = "kyutai/mimi"
+MIMI_HF_REPO = "kyutai/stt-1b-en_fr"
 ANTICIPATION_HF_REPO = "viks66/endpoint-anticipation"
 MIMI_CHUNK_SIZE = 1920   # 80ms at 24kHz
 MAX_CONTEXT_STEPS = 240  # ~19.2 seconds of rolling context
