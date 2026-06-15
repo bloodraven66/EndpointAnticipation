@@ -248,15 +248,10 @@ def plot_predictions(
     ax_prob.plot(times, probs, color="#4CAF50", linewidth=1.4, label="Anticipation prob", zorder=3)
     ax_prob.axhline(threshold, color="#4CAF50", linewidth=0.8, linestyle="--", alpha=0.6)
 
-    # Stars at exact intersection of rising prob curve and threshold line (interpolated)
-    rising = np.where((probs[1:] >= threshold) & (probs[:-1] < threshold))[0]
-    star_times = []
-    for idx in rising:
-        t0, t1 = times[idx], times[idx + 1]
-        p0, p1 = probs[idx], probs[idx + 1]
-        t_cross = t0 + (threshold - p0) / (p1 - p0) * (t1 - t0)
-        star_times.append(t_cross)
-    if star_times:
+    # Stars at the first frame where prob crosses threshold on a rising edge
+    rising = (probs[1:] >= threshold) & (probs[:-1] < threshold)
+    star_times = times[1:][rising]
+    if len(star_times):
         ax_prob.scatter(star_times, np.full(len(star_times), threshold), marker="*", color="#FF9800", s=120, zorder=5, label="Anticipated")
 
     ax_prob.set_ylabel("Anticipation probability", color="#4CAF50")
@@ -282,7 +277,7 @@ def main():
     parser.add_argument("--config", default=None, help="Model config YAML. Downloaded from HuggingFace if omitted.")
     parser.add_argument("--checkpoint", default=None, help="Checkpoint path (.pt). Downloaded from HuggingFace if omitted.")
     parser.add_argument("--audio", required=True, help="Audio file (WAV). 2-channel: ch0=user, ch1=system. Mono: user only, system zero-filled.")
-    parser.add_argument("--threshold", type=float, default=0.5, help="Probability threshold for anticipation")
+    parser.add_argument("--threshold", type=float, default=0.45, help="Probability threshold for anticipation")
     parser.add_argument("--output_dir", default="output", help="Directory to save predictions JSON and plot.")
     parser.add_argument("--plot", action="store_true", help="Save prediction plot to output_dir.")
     parser.add_argument("--device", default=None, help="Device override (cuda / cpu). Auto-detected if omitted.")
