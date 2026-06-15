@@ -4,6 +4,8 @@
 
 > Sathvik Udupa, Shinji Watanabe, Petr Schwarz, Jan Cernocky
 
+![Sample anticipation output](samples/input_plot.png)
+
 ---
 
 ## Overview
