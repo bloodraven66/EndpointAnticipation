@@ -1,22 +1,34 @@
 # Unmute Integration
 
-Integration of the endpoint anticipation model into [Unmute](https://github.com/kyutai-labs/unmute), Kyutai's open-source spoken dialogue system. The anticipator runs as a dedicated inference server alongside STT, TTS, and LLM, enabling speculative LLM execution that starts responding before the user finishes speaking.
+This directory builds on top of [Unmute](https://github.com/kyutai-labs/unmute), Kyutai's open-source real-time spoken dialogue framework. Unmute provides high-quality, production-ready components that we use without modification: the **moshi-server STT** (streaming ASR), **moshi-server TTS** (neural text-to-speech), and **VAD** (voice activity detection, used to decide when to commit a speculative response to the user). These components are excellent as-is.
+
+### Contributions in this work
+
+**1. Endpoint anticipation model** (`../anticipation-model/`) — a streaming causal transformer over neural audio codec features that predicts end-of-turn probability at each 80 ms frame, up to 2.56 s in advance.
+
+**2. Speculative orchestration** (`unmute/unmute_handler_speculative.py`) — when the anticipator fires above a threshold during the user's turn, the system immediately launches a speculative LLM call on the partial transcript and pipes its output into a speculative TTS stream. The speculative audio is buffered in a cache. If the user keeps speaking, the anticipation window expires, the speculation is discarded, and a new one may be launched on the updated transcript. When VAD finally confirms the end of turn, the committed speculation is replayed to the user — with no additional LLM or TTS latency.
+
+**3. Continuation generation** — after committing the speculative prefix, a second LLM call runs on the full final transcript and continues generating from where the speculative response left off. Crucially, the continuation TTS resumes from the **speculative TTS state**, ensuring prosodic continuity and natural-sounding speech across the prefix/continuation boundary.
+
+**4. Offline evaluation** (`unmute/scripts/evaluate_recording.py`, `evaluate_recording_speculative.py`) — scripts to run Unmute and Unmute+Anticipation on pre-recorded audio files for reproducible latency benchmarking, used to produce the results in the paper.
 
 ## Architecture
 
 ```
-User audio ──► STT (moshi-server :8090)
-               │
-               ▼
-           Unmute handler ──► Anticipator (:8093)
-               │                    │
-               │         anticipation fires early
-               │                    │
-               ▼                    ▼
-           LLM  (vLLM :8091) ◄── speculative generation starts
-               │                 (discarded if user keeps talking,
-               ▼                  committed when VAD confirms)
-           TTS (moshi-server :8089)
+User audio ──► STT  (moshi-server :8090)  ←── Kyutai Unmute (unchanged)
+               │           VAD ──────────────────────────────┐
+               ▼                                             │ (commit / discard)
+           Unmute handler ──► Anticipator (:8093)            │
+               │                    │                        │
+               │         anticipation fires                  │
+               │                    │                        │
+               ▼                    ▼                        │
+           LLM (vLLM :8091) ◄── speculative LLM starts      │
+               │                   │                         │
+               ▼                   ▼                         │
+           TTS (moshi-server :8089) ◄── speculative TTS ─────┘
+                                        (state preserved for
+                                         natural continuation)
 ```
 
 ## Setup
