@@ -28,6 +28,7 @@ import json
 import logging
 import os
 
+import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torchaudio
@@ -164,6 +165,48 @@ def run_inference(
     return predictions
 
 
+def plot_predictions(
+    predictions: list[dict],
+    user_audio: np.ndarray,
+    system_audio: np.ndarray | None,
+    target_sr: int,
+    threshold: float,
+    save_path: str,
+) -> None:
+    times = np.array([p["time_s"] for p in predictions])
+    probs = np.array([p["probability"] for p in predictions])
+    audio_times = np.arange(len(user_audio)) / target_sr
+
+    fig, ax_audio = plt.subplots(figsize=(14, 3))
+
+    # Waveforms (left y-axis)
+    ax_audio.plot(audio_times, user_audio, color="#2196F3", alpha=0.45, linewidth=0.6, label="User")
+    if system_audio is not None:
+        ax_audio.plot(audio_times, system_audio, color="#FF5722", alpha=0.45, linewidth=0.6, label="System")
+    ax_audio.set_xlabel("Time (s)")
+    ax_audio.set_ylabel("Amplitude", color="#555555")
+    ax_audio.tick_params(axis="y", labelcolor="#555555")
+    ax_audio.set_xlim(audio_times[0], audio_times[-1])
+
+    # Anticipation probabilities (right y-axis)
+    ax_prob = ax_audio.twinx()
+    ax_prob.plot(times, probs, color="#4CAF50", linewidth=1.4, label="Anticipation prob", zorder=3)
+    ax_prob.axhline(threshold, color="#4CAF50", linewidth=0.8, linestyle="--", alpha=0.6)
+    ax_prob.set_ylabel("Anticipation probability", color="#4CAF50")
+    ax_prob.tick_params(axis="y", labelcolor="#4CAF50")
+    ax_prob.set_ylim(0, 1)
+
+    # Combined legend
+    lines_audio, labels_audio = ax_audio.get_legend_handles_labels()
+    lines_prob, labels_prob = ax_prob.get_legend_handles_labels()
+    ax_audio.legend(lines_audio + lines_prob, labels_audio + labels_prob, loc="upper left", fontsize=8)
+
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=150)
+    plt.close(fig)
+    logger.info("Plot saved to %s", save_path)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Endpoint anticipation offline inference")
     parser.add_argument("--config", required=True, help="Model config YAML (e.g. configs/forecasting/mimi/fc2560_...yaml)")
@@ -172,6 +215,7 @@ def main():
     parser.add_argument("--system_audio", default=None, help="System audio file (WAV). If omitted, zero stream is used.")
     parser.add_argument("--threshold", type=float, default=0.5, help="Probability threshold for endpoint detection")
     parser.add_argument("--output", default=None, help="Path to save predictions JSON. Prints to stdout if omitted.")
+    parser.add_argument("--plot", default=None, help="Path to save prediction plot (e.g. predictions.png).")
     parser.add_argument("--device", default=None, help="Device override (cuda / cpu). Auto-detected if omitted.")
     args = parser.parse_args()
 
@@ -217,6 +261,9 @@ def main():
         logger.info("Predictions saved to %s", args.output)
     else:
         print(json.dumps(result, indent=2))
+
+    if args.plot:
+        plot_predictions(predictions, user_audio, system_audio, target_sr, args.threshold, args.plot)
 
 
 if __name__ == "__main__":
