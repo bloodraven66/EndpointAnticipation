@@ -235,10 +235,10 @@ def plot_predictions(
     fig, ax_audio = plt.subplots(figsize=(14, 3))
     ax_audio.set_title(title, fontsize=9)
 
-    # Waveforms
-    ax_audio.plot(audio_times, user_audio, color="#2196F3", alpha=0.45, linewidth=0.6, label="User")
+    # Waveforms — filled areas so overlap is visible as a colour blend
+    ax_audio.fill_between(audio_times, user_audio, alpha=0.4, color="#2196F3", linewidth=0, label="User")
     if system_audio is not None:
-        ax_audio.plot(audio_times, system_audio, color="#FF5722", alpha=0.45, linewidth=0.6, label="System")
+        ax_audio.fill_between(audio_times, system_audio, alpha=0.4, color="#FF5722", linewidth=0, label="System")
     ax_audio.set_xlabel("Time (s)")
     ax_audio.set_ylabel("Amplitude", color="#555555")
     ax_audio.tick_params(axis="y", labelcolor="#555555")
