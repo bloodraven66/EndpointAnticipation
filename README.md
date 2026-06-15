@@ -74,8 +74,8 @@ If you use this work, please cite:
 
 ## TODO
 
-- [ ] Anticipation model codebase
-- [ ] Anticipation model README
+- [x] Anticipation model codebase
+- [x] Anticipation model README
 - [ ] Unmute integration codebase
 - [ ] Unmute integration README
 - [ ] Model checkpoints (HuggingFace)
