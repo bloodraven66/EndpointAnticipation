@@ -125,6 +125,45 @@ python run.py --config configs/infer.yaml --infer <run_name>
 
 ---
 
+## Quick Inference
+
+For running the model on a single audio file, use `infer.py`. The pretrained checkpoint and config are downloaded automatically from HuggingFace on first run.
+
+```bash
+# 2-channel audio (ch0 = user, ch1 = system)
+python infer.py --audio conversation.wav --plot
+
+# Mono audio (system stream zero-filled)
+python infer.py --audio user.wav --plot
+
+# Limit to first 20 seconds, custom output folder
+python infer.py --audio conversation.wav --max_duration 20 --output_dir results/ --plot
+```
+
+**Arguments:**
+
+| Argument | Default | Description |
+|----------|---------|-------------|
+| `--audio` | required | WAV/FLAC file. 2-channel: ch0=user, ch1=system. Mono: user only. |
+| `--threshold` | 0.3 | Anticipation probability threshold |
+| `--max_duration` | — | Limit inference to first N seconds |
+| `--output_dir` | `output/` | Folder for JSON predictions and plot |
+| `--plot` | off | Save waveform + anticipation probability plot |
+| `--config` | HuggingFace | Override model config YAML |
+| `--checkpoint` | HuggingFace | Override model checkpoint path |
+
+Outputs saved to `output_dir/`:
+- `<stem>_predictions.json` — per-frame probabilities and anticipation events
+- `<stem>_plot.png` — waveform with anticipation curve (if `--plot`)
+
+### Sample Output
+
+![Sample anticipation plot](../samples/input_plot.png)
+
+The plot shows user (blue) and system (orange) audio streams with the anticipation probability curve (green, right axis). Stars mark frames where the probability crosses the threshold on a rising edge — i.e. the model anticipates an upcoming end-of-turn.
+
+---
+
 ## Pretrained Checkpoints
 
 Pretrained checkpoints are available on HuggingFace: **[viks66/endpoint-anticipation](https://huggingface.co/viks66/endpoint-anticipation)**

@@ -1,0 +1,690 @@
+{
+  "config": "/mnt/matylda4/udupa/hugging-face/hub/models--viks66--endpoint-anticipation/snapshots/0cb35421a0ed1312e0163726f5c75dfc117f9218/config.yaml",
+  "checkpoint": "/mnt/matylda4/udupa/hugging-face/hub/models--viks66--endpoint-anticipation/snapshots/0cb35421a0ed1312e0163726f5c75dfc117f9218/best_val_acc.pt",
+  "threshold": 0.3,
+  "audio_duration_s": 10.9,
+  "n_frames": 136,
+  "n_anticipated": 4,
+  "predictions": [
+    {
+      "time_s": 0.0,
+      "probability": 0.0009,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.08,
+      "probability": 0.0081,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.16,
+      "probability": 0.0302,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.24,
+      "probability": 0.025,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.32,
+      "probability": 0.0468,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.4,
+      "probability": 0.0425,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.48,
+      "probability": 0.0651,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.56,
+      "probability": 0.0326,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.64,
+      "probability": 0.0341,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.72,
+      "probability": 0.0521,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.8,
+      "probability": 0.023,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.88,
+      "probability": 0.0148,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 0.96,
+      "probability": 0.0129,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.04,
+      "probability": 0.0039,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.12,
+      "probability": 0.0016,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.2,
+      "probability": 0.0022,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.28,
+      "probability": 0.0028,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.36,
+      "probability": 0.0022,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.44,
+      "probability": 0.0011,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.52,
+      "probability": 0.0009,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.6,
+      "probability": 0.0006,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.68,
+      "probability": 0.0634,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.76,
+      "probability": 0.0871,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.84,
+      "probability": 0.1217,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 1.92,
+      "probability": 0.0924,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.0,
+      "probability": 0.0916,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.08,
+      "probability": 0.0756,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.16,
+      "probability": 0.1121,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.24,
+      "probability": 0.082,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.32,
+      "probability": 0.0763,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.4,
+      "probability": 0.0905,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.48,
+      "probability": 0.0733,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.56,
+      "probability": 0.059,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.64,
+      "probability": 0.0511,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.72,
+      "probability": 0.0982,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.8,
+      "probability": 0.0779,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.88,
+      "probability": 0.0653,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 2.96,
+      "probability": 0.1076,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.04,
+      "probability": 0.0954,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.12,
+      "probability": 0.1774,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.2,
+      "probability": 0.1028,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.28,
+      "probability": 0.0734,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.36,
+      "probability": 0.0981,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.44,
+      "probability": 0.1269,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.52,
+      "probability": 0.1064,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.6,
+      "probability": 0.0668,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.68,
+      "probability": 0.0777,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.76,
+      "probability": 0.0727,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.84,
+      "probability": 0.0716,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 3.92,
+      "probability": 0.0695,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.0,
+      "probability": 0.1592,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.08,
+      "probability": 0.125,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.16,
+      "probability": 0.0442,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.24,
+      "probability": 0.1104,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.32,
+      "probability": 0.0901,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.4,
+      "probability": 0.0946,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.48,
+      "probability": 0.1294,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.56,
+      "probability": 0.1219,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.64,
+      "probability": 0.1187,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.72,
+      "probability": 0.0857,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.8,
+      "probability": 0.0868,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.88,
+      "probability": 0.1116,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 4.96,
+      "probability": 0.2061,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.04,
+      "probability": 0.1565,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.12,
+      "probability": 0.1227,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.2,
+      "probability": 0.3068,
+      "endpoint_anticipated": true
+    },
+    {
+      "time_s": 5.28,
+      "probability": 0.6584,
+      "endpoint_anticipated": true
+    },
+    {
+      "time_s": 5.36,
+      "probability": 0.6264,
+      "endpoint_anticipated": true
+    },
+    {
+      "time_s": 5.44,
+      "probability": 0.3792,
+      "endpoint_anticipated": true
+    },
+    {
+      "time_s": 5.52,
+      "probability": 0.0311,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.6,
+      "probability": 0.0062,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.68,
+      "probability": 0.0016,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.76,
+      "probability": 0.0012,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.84,
+      "probability": 0.0013,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 5.92,
+      "probability": 0.0009,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.0,
+      "probability": 0.0009,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.08,
+      "probability": 0.0007,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.16,
+      "probability": 0.0004,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.24,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.32,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.4,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.48,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.56,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.64,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.72,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.8,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.88,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 6.96,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.04,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.12,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.2,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.28,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.36,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.44,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.52,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.6,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.68,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.76,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.84,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 7.92,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.0,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.08,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.16,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.24,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.32,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.4,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.48,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.56,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.64,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.72,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.8,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.88,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 8.96,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.04,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.12,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.2,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.28,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.36,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.44,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.52,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.6,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.68,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.76,
+      "probability": 0.0003,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.84,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 9.92,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.0,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.08,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.16,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.24,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.32,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.4,
+      "probability": 0.0001,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.48,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.56,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.64,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.72,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    },
+    {
+      "time_s": 10.8,
+      "probability": 0.0002,
+      "endpoint_anticipated": false
+    }
+  ]
+}
