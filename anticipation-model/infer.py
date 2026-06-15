@@ -10,17 +10,16 @@ By default, the pretrained checkpoint and config are downloaded automatically
 from HuggingFace (viks66/endpoint-anticipation).
 
 Usage:
-    # Using pretrained checkpoint from HuggingFace (default)
-    python infer.py --user_audio user.wav --system_audio system.wav --plot out.png
+    # 2-channel audio: channel 0 = user, channel 1 = system
+    python infer.py --audio conversation.wav --plot out.png
 
-    # Dual-stream with a local checkpoint
-    python infer.py --config configs/forecasting/mimi/fc960_transformer_mimi_12.5hz_loss1-01_m3.yaml \
-                    --checkpoint /path/to/best_val_acc.pt \
-                    --user_audio user.wav \
-                    --system_audio system.wav
+    # 1-channel audio: user only, system stream zero-filled
+    python infer.py --audio user.wav --output predictions.json
 
-    # Single-stream (zero-filled system stream)
-    python infer.py --user_audio audio.wav --output predictions.json
+    # With a local checkpoint
+    python infer.py --audio conversation.wav \
+                    --config configs/forecasting/mimi/fc960_transformer_mimi_12.5hz_loss1-01_m3.yaml \
+                    --checkpoint /path/to/best_val_acc.pt
 
 Dependencies:
     pip install torch torchaudio moshi numpy matplotlib huggingface_hub pyyaml
@@ -126,13 +125,14 @@ def load_model(cfg: dict, checkpoint_path: str, device: torch.device) -> Anticip
     return model
 
 
-def load_audio(path: str, target_sr: int) -> np.ndarray:
+def load_audio(path: str, target_sr: int) -> tuple[np.ndarray, np.ndarray | None]:
+    """Load audio file. Returns (user, system) arrays; system is None if mono."""
     wav, sr = torchaudio.load(path)
-    if wav.shape[0] > 1:
-        wav = wav.mean(dim=0, keepdim=True)
     if sr != target_sr:
         wav = torchaudio.functional.resample(wav, sr, target_sr)
-    return wav.squeeze(0).numpy()
+    if wav.shape[0] >= 2:
+        return wav[0].numpy(), wav[1].numpy()
+    return wav[0].numpy(), None
 
 
 # ---------------------------------------------------------------------------
@@ -260,8 +260,7 @@ def main():
     parser = argparse.ArgumentParser(description="Endpoint anticipation offline inference")
     parser.add_argument("--config", default=None, help="Model config YAML. Downloaded from HuggingFace if omitted.")
     parser.add_argument("--checkpoint", default=None, help="Checkpoint path (.pt). Downloaded from HuggingFace if omitted.")
-    parser.add_argument("--user_audio", required=True, help="User audio file (WAV)")
-    parser.add_argument("--system_audio", default=None, help="System audio file (WAV). Zero stream used if omitted.")
+    parser.add_argument("--audio", required=True, help="Audio file (WAV). 2-channel: ch0=user, ch1=system. Mono: user only, system zero-filled.")
     parser.add_argument("--threshold", type=float, default=0.5, help="Probability threshold for endpoint detection")
     parser.add_argument("--output", default=None, help="Path to save predictions JSON. Prints to stdout if omitted.")
     parser.add_argument("--plot", default=None, help="Path to save prediction plot (PNG).")
@@ -278,15 +277,12 @@ def main():
     mimi = load_mimi(device)
     model = load_model(cfg, checkpoint_path, device)
 
-    logger.info("Loading user audio from %s", args.user_audio)
-    user_audio = load_audio(args.user_audio, target_sr)
-
-    system_audio = None
-    if args.system_audio:
-        logger.info("Loading system audio from %s", args.system_audio)
-        system_audio = load_audio(args.system_audio, target_sr)
-        n = min(len(user_audio), len(system_audio))
-        user_audio, system_audio = user_audio[:n], system_audio[:n]
+    logger.info("Loading audio from %s", args.audio)
+    user_audio, system_audio = load_audio(args.audio, target_sr)
+    if system_audio is not None:
+        logger.info("2-channel audio detected: using ch0=user, ch1=system")
+    else:
+        logger.info("Mono audio detected: system stream will be zero-filled")
 
     logger.info("Running inference on %.2f seconds of audio", len(user_audio) / target_sr)
     predictions = run_inference(mimi, model, user_audio, system_audio, device, args.threshold, target_sr)
