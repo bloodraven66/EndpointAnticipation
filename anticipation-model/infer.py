@@ -282,7 +282,7 @@ def main():
     parser.add_argument("--config", default=None, help="Model config YAML. Downloaded from HuggingFace if omitted.")
     parser.add_argument("--checkpoint", default=None, help="Checkpoint path (.pt). Downloaded from HuggingFace if omitted.")
     parser.add_argument("--audio", required=True, help="Audio file (WAV). 2-channel: ch0=user, ch1=system. Mono: user only, system zero-filled.")
-    parser.add_argument("--threshold", type=float, default=0.45, help="Probability threshold for anticipation")
+    parser.add_argument("--threshold", type=float, default=0.3, help="Probability threshold for anticipation")
     parser.add_argument("--max_duration", type=float, default=None, help="Limit inference to first N seconds of audio.")
     parser.add_argument("--output_dir", default="output", help="Directory to save predictions JSON and plot.")
     parser.add_argument("--plot", action="store_true", help="Save prediction plot to output_dir.")
