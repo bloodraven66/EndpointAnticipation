@@ -64,13 +64,13 @@ Plots and audio in `samples/` are from [Full Duplex Bench v1](https://github.com
 
 **Baseline (VAD only)** — bot audio starts only after VAD triggers and LLM+TTS complete:
 
-![Baseline VAD example](samples/example_baseline_plot.png)
+![Baseline VAD example](../samples/unmute_baseline_plot.png)
 
 **With endpoint anticipation** — speculative LLM+TTS run during the user's turn; committed audio is already buffered when VAD fires:
 
-![Speculative generation example](samples/example_plot.png)
+![Speculative generation example](../samples/unmute_example_plot.png)
 
-`samples/example_timings.json` records the full speculation trace. The key sequence:
+`../samples/unmute_example_timings.json` records the full speculation trace. The key sequence:
 
 | Time | Event | Transcript available | Speculated response |
 |------|-------|---------------------|---------------------|

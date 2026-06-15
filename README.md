@@ -14,11 +14,11 @@ The following example is from [Full Duplex Bench v1](https://github.com/DanielLi
 
 **Baseline (VAD only)** — LLM and TTS only start after end-of-turn is detected; bot audio is delayed by the full LLM+TTS processing time:
 
-![Baseline VAD](unmute-integration/samples/example_baseline_plot.png)
+![Baseline VAD](samples/unmute_baseline_plot.png)
 
 **With endpoint anticipation** — the model fires speculatively 3 times as the transcript grows, each time refining the response. The third speculation (starting at 4.64s, on transcript *"...teach English"*) is committed when VAD confirms at 6.0s. Bot audio was already buffered **0.64s before** the turn ended:
 
-![Anticipation](unmute-integration/samples/example_plot.png)
+![Anticipation](samples/unmute_example_plot.png)
 
 | Time | Transcript so far | Speculative response | Outcome |
 |------|------------------|----------------------|---------|
@@ -27,7 +27,7 @@ The following example is from [Full Duplex Bench v1](https://github.com/DanielLi
 | 4.64s | *"...That let you teach English"* | "...1. Cambly 2. italki 3. Verbling 4. Preply..." | **committed** ✓ |
 | 6.00s | VAD fires | Committed audio replayed; continuation LLM first token at 6.32s | |
 
-See [`unmute-integration/samples/`](unmute-integration/samples/) for the audio and full timings JSON.
+See [`samples/`](samples/) for the audio and full timings JSON.
 
 ---
 
