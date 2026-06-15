@@ -54,7 +54,7 @@ A modified version of the [Unmute](https://github.com/kyutai-labs/unmute) real-t
 
 Pre-trained model checkpoints are available on HuggingFace:
 
-> **[HuggingFace model page — link TBD]**
+> **[viks66/endpoint-anticipation](https://huggingface.co/viks66/endpoint-anticipation)**
 
 ## Citation
 
@@ -78,7 +78,7 @@ If you use this work, please cite:
 - [x] Anticipation model README
 - [ ] Unmute integration codebase
 - [ ] Unmute integration README
-- [ ] Model checkpoints (HuggingFace)
+- [x] Model checkpoints (HuggingFace)
 
 ---
 

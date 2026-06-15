@@ -127,6 +127,6 @@ python run.py --config configs/infer.yaml --infer <run_name>
 
 ## Pretrained Checkpoints
 
-Pretrained checkpoints are available on HuggingFace: **[link TBD]**
+Pretrained checkpoints are available on HuggingFace: **[viks66/endpoint-anticipation](https://huggingface.co/viks66/endpoint-anticipation)**
 
 Download and place under your `checkpoint_folder`, then run inference as above.
