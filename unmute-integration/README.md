@@ -80,3 +80,9 @@ Plots and audio in `samples/` are from [Full Duplex Bench v1](https://github.com
 | 6.00s | VAD confirms end-of-turn | Full transcript | Committed audio replayed; continuation LLM first token at 6.32s |
 
 The bot's first audio chunk was ready at **5.36s** — 0.64s before VAD triggered at 6.0s. Compared to the baseline where LLM and TTS only start after VAD, the speculative response begins with no perceptible latency.
+
+## Early Triggers and Expected Redundant Computation (ERC)
+
+As with any turn-taking system, the anticipation model can fire early — triggering speculative generation that is subsequently discarded because the user keeps speaking. This is especially common on **long turns** where sub-utterances are grammatically complete in themselves (e.g. *"10 companies."* looks like a full turn before the user continues *"...that let you teach English online"*). The example above illustrates this: two of the three speculation attempts were discarded.
+
+Early triggers are not failures — discarded speculations are cheap relative to the latency savings when a prediction is correct. However, they do represent redundant LLM and TTS computation. The paper introduces **Expected Redundant Computation (ERC)** to quantify this trade-off: the expected number of speculative tokens generated per turn that are ultimately discarded. ERC can be measured independently using only the anticipation model and a labelled dataset, without running the full dialogue system — see the `anticipation-model/` evaluation for details.
