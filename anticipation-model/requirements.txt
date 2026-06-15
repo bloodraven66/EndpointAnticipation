@@ -11,9 +11,11 @@ huggingface_hub
 librosa
 scikit-learn
 tqdm
-wandb
 easydict
 coloredlogs
+
+# Optional: W&B logging (set use_wandb: true in config to enable)
+# wandb
 
 # Required only for NeMo-based configs (configs/forecasting/nemo/)
 # nemo_toolkit[asr]
