@@ -278,6 +278,7 @@ def main():
     parser.add_argument("--checkpoint", default=None, help="Checkpoint path (.pt). Downloaded from HuggingFace if omitted.")
     parser.add_argument("--audio", required=True, help="Audio file (WAV). 2-channel: ch0=user, ch1=system. Mono: user only, system zero-filled.")
     parser.add_argument("--threshold", type=float, default=0.45, help="Probability threshold for anticipation")
+    parser.add_argument("--max_duration", type=float, default=None, help="Limit inference to first N seconds of audio.")
     parser.add_argument("--output_dir", default="output", help="Directory to save predictions JSON and plot.")
     parser.add_argument("--plot", action="store_true", help="Save prediction plot to output_dir.")
     parser.add_argument("--device", default=None, help="Device override (cuda / cpu). Auto-detected if omitted.")
@@ -299,6 +300,13 @@ def main():
         logger.info("2-channel audio detected: using ch0=user, ch1=system")
     else:
         logger.info("Mono audio detected: system stream will be zero-filled")
+
+    if args.max_duration is not None:
+        max_samples = int(args.max_duration * target_sr)
+        user_audio = user_audio[:max_samples]
+        if system_audio is not None:
+            system_audio = system_audio[:max_samples]
+        logger.info("Audio limited to %.2f seconds", args.max_duration)
 
     logger.info("Running streaming inference on %.2f seconds of audio", len(user_audio) / target_sr)
     predictions = run_inference(mimi, model, user_audio, system_audio, device, args.threshold, target_sr)
