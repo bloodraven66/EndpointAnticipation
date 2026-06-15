@@ -248,12 +248,16 @@ def plot_predictions(
     ax_prob.plot(times, probs, color="#4CAF50", linewidth=1.4, label="Anticipation prob", zorder=3)
     ax_prob.axhline(threshold, color="#4CAF50", linewidth=0.8, linestyle="--", alpha=0.6)
 
-    # Stars on rising edge crossings (prob goes from below to above threshold)
-    rising = (probs[1:] >= threshold) & (probs[:-1] < threshold)
-    star_times = times[1:][rising]
-    star_probs = probs[1:][rising]
-    if len(star_times):
-        ax_prob.scatter(star_times, np.full_like(star_times, threshold), marker="*", color="#FF9800", s=120, zorder=5, label="Anticipated")
+    # Stars at exact intersection of rising prob curve and threshold line (interpolated)
+    rising = np.where((probs[1:] >= threshold) & (probs[:-1] < threshold))[0]
+    star_times = []
+    for idx in rising:
+        t0, t1 = times[idx], times[idx + 1]
+        p0, p1 = probs[idx], probs[idx + 1]
+        t_cross = t0 + (threshold - p0) / (p1 - p0) * (t1 - t0)
+        star_times.append(t_cross)
+    if star_times:
+        ax_prob.scatter(star_times, np.full(len(star_times), threshold), marker="*", color="#FF9800", s=120, zorder=5, label="Anticipated")
 
     ax_prob.set_ylabel("Anticipation probability", color="#4CAF50")
     ax_prob.tick_params(axis="y", labelcolor="#4CAF50")
