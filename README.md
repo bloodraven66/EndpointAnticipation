@@ -52,6 +52,29 @@ A modified version of the [Unmute](https://github.com/kyutai-labs/unmute) real-t
 
 ---
 
+## System in Action
+
+The following example is from [Full Duplex Bench v1](https://github.com/DanielLin94144/Full-Duplex-Bench), sample `candor_turn_taking/1`. The user asks: *"10 companies that let you teach English online without a..."*
+
+**Baseline (VAD only)** — LLM and TTS only start after end-of-turn is detected; bot audio is delayed by the full LLM+TTS processing time:
+
+![Baseline VAD](unmute-integration/samples/example_baseline_plot.png)
+
+**With endpoint anticipation** — the model fires speculatively 3 times as the transcript grows, each time refining the response. The third speculation (starting at 4.64s, on transcript *"...teach English"*) is committed when VAD confirms at 6.0s. Bot audio was already buffered **0.64s before** the turn ended:
+
+![Anticipation](unmute-integration/samples/example_plot.png)
+
+| Time | Transcript so far | Speculative response | Outcome |
+|------|------------------|----------------------|---------|
+| 2.56s | *"10 companies."* | "...1. Apple 2. Microsoft..." | discarded |
+| 3.60s | *"...That let you teach"* | "...1. Duolingo 2. Khan Academy..." | discarded |
+| 4.64s | *"...That let you teach English"* | "...1. Cambly 2. italki 3. Verbling 4. Preply..." | **committed** ✓ |
+| 6.00s | VAD fires | Committed audio replayed; continuation LLM first token at 6.32s | |
+
+See [`unmute-integration/samples/`](unmute-integration/samples/) for the audio and full timings JSON.
+
+---
+
 ## Model Weights
 
 Pre-trained model checkpoints are available on HuggingFace:
@@ -78,8 +101,8 @@ If you use this work, please cite:
 
 - [x] Anticipation model codebase
 - [x] Anticipation model README
-- [ ] Unmute integration codebase
-- [ ] Unmute integration README
+- [x] Unmute integration codebase
+- [x] Unmute integration README
 - [x] Model checkpoints (HuggingFace)
 
 ---
