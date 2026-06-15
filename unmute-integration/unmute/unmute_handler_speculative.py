@@ -155,16 +155,16 @@ class UnmuteHandlerSpeculative(UnmuteHandler):
     def _get_speculative_messages(self) -> list[dict[str, Any]]:
         """Return the messages snapshot to use for speculative LLM generation.
 
-        Subclasses can override to inject RAG context or speculative-mode
-        instructions without mutating the real chat history.
+        Subclasses can override to inject speculative-mode instructions
+        without mutating the real chat history.
         """
         return self.chatbot.preprocessed_messages()
 
     async def _pre_continuation_messages_hook(self) -> None:
         """Called just before the continuation LLM reads preprocessed_messages().
 
-        Subclasses can override to ensure any async work (e.g. a background RAG
-        refresh) completes before the message snapshot is taken.
+        Subclasses can override to ensure any async work completes before
+        the message snapshot is taken.
         """
 
     def _spec_continuation_needed(self, committed_state: SpeculativeState) -> bool:
@@ -174,7 +174,7 @@ class UnmuteHandlerSpeculative(UnmuteHandler):
         continuation LLM may extend the response. The prefix has its trailing
         punctuation stripped before being passed to the continuation LLM so the
         model treats it as an unfinished thought and continues.
-        Subclasses can override for specialised behaviour (e.g. RAG).
+        Subclasses can override for specialised behaviour.
         """
         return True
 

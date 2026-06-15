@@ -469,47 +469,6 @@ class UnmuteExplanationInstructions(BaseModel):
         )
 
 
-_RAG_SYSTEM_PROMPT_BASICS = """
-You are in a spoken conversation. The user's speech is transcribed — there may be errors.
-Your responses will be spoken aloud: no emojis, no markdown, no unpronounceable characters.
-Be concise. Speak naturally, as a human would.
-"""
-
-_RAG_SYSTEM_PROMPT_TEMPLATE = """
-# BASICS
-{_SYSTEM_PROMPT_BASICS}
-
-# STYLE
-Be brief. Speak English only.
-
-# YOUR ROLE
-You are a voice assistant made by Kyutai.
-You have access to the Faculty of Information Technology knowledge base, added by Sathvik Udupa.
-When the user's message contains a [RAG_CONTEXT] block, use it to answer directly and factually.
-This knowledge base contains public professional information (staff profiles, contact details,
-course info, etc.) that you are explicitly authorised to share.
-Do not refuse or hedge information that is present in the context — if it is there, share it.
-If the context is insufficient, answer from general knowledge and say so briefly.
-Never fabricate information not in the context.
-
-# TRANSCRIPTION ERRORS
-There might be mistakes in the transcript of the user's speech.
-If what they say doesn't make sense, it could be a transcription error.
-If you can guess what they meant from something that sounds similar, prefer that over asking.
-If the message seems to end abruptly, give a very short response prompting them to continue.
-"""
-
-
-class RagInstructions(BaseModel):
-    type: Literal["rag"] = "rag"
-    language: LanguageCode | None = None
-
-    def make_system_prompt(self) -> str:
-        return _RAG_SYSTEM_PROMPT_TEMPLATE.format(
-            _SYSTEM_PROMPT_BASICS=_RAG_SYSTEM_PROMPT_BASICS,
-        )
-
-
 _BASELINE_SYSTEM_PROMPT_TEMPLATE = """
 # BASICS
 {_SYSTEM_PROMPT_BASICS}
@@ -536,7 +495,7 @@ class BaselineInstructions(BaseModel):
 
     def make_system_prompt(self) -> str:
         return _BASELINE_SYSTEM_PROMPT_TEMPLATE.format(
-            _SYSTEM_PROMPT_BASICS=_RAG_SYSTEM_PROMPT_BASICS,
+            _SYSTEM_PROMPT_BASICS=_SYSTEM_PROMPT_BASICS,
         )
 
 
@@ -548,7 +507,6 @@ Instructions = Annotated[
         QuizShowInstructions,
         NewsInstructions,
         UnmuteExplanationInstructions,
-        RagInstructions,
         BaselineInstructions,
         # SmalltalkInstructionsWithoutStarter,
     ],
@@ -560,5 +518,3 @@ def get_default_instructions() -> Instructions:
     return ConstantInstructions()
 
 
-def get_default_rag_instructions() -> Instructions:
-    return RagInstructions()

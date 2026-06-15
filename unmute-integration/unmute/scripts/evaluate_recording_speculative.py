@@ -34,12 +34,12 @@ async def main(input_path: Path, output_path: Path, voice: str) -> None:
 
     handler = UnmuteHandlerSpeculative()
 
-    from unmute.llm.system_prompt import RagInstructions
+    from unmute.llm.system_prompt import BaselineInstructions
 
     print("Configuring session for evaluation (speculative mode)...")
     await handler.update_session(
         ora.SessionConfig(
-            instructions=RagInstructions(),
+            instructions=BaselineInstructions(),
             voice=voice,
             allow_recording=False,
             modalities=["audio", "text"],
