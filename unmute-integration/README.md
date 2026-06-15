@@ -48,19 +48,23 @@ Set `instruction_type=smalltalk_no_starter` in `infer_fdb.sh` for the VAD baseli
 
 ## Example
 
-The plot and audio in `samples/` are from [Full Duplex Bench v1](https://github.com/DanielLin94144/Full-Duplex-Bench), sample `candor_turn_taking/1`.
+Plots and audio in `samples/` are from [Full Duplex Bench v1](https://github.com/DanielLin94144/Full-Duplex-Bench), sample `candor_turn_taking/1`. The user asks: *"10 companies that let you teach English online without a..."*
+
+**Baseline (VAD only)** — bot audio starts only after VAD triggers and LLM+TTS complete:
+
+![Baseline VAD example](samples/example_baseline_plot.png)
+
+**With endpoint anticipation** — speculative LLM+TTS run during the user's turn; committed audio is already buffered when VAD fires:
 
 ![Speculative generation example](samples/example_plot.png)
-
-The user asks: *"10 companies that let you teach English online without a..."* (transcript builds incrementally).
 
 `samples/example_timings.json` records the full speculation trace. The key sequence:
 
 | Time | Event | Transcript available | Speculated response |
 |------|-------|---------------------|---------------------|
-| 2.56s | Anticipation fires (p=0.56) | *"10 companies."* | "Okay, here are 10 companies: 1. Apple 2. Microsoft..." — **discarded** (user still speaking) |
-| 3.60s | Anticipation fires (p=0.53) | *"10 companies. That let you teach"* | "...companies that let you teach: 1. Duolingo 2. Khan Academy..." — **discarded** |
-| 4.64s | Anticipation fires (p=0.50) | *"10 companies. That let you teach English"* | "...teach English: 1. Cambly 2. italki 3. Verbling 4. Preply..." — **committed** ✓ |
-| 6.00s | VAD confirms end-of-turn | Full transcript | Committed speculation replayed; continuation LLM extends from token 1 at 6.32s |
+| 2.56s | Anticipation fires (p=0.56) | *"10 companies."* | "...1. Apple 2. Microsoft..." — **discarded** (user still speaking) |
+| 3.60s | Anticipation fires (p=0.53) | *"10 companies. That let you teach"* | "...1. Duolingo 2. Khan Academy..." — **discarded** |
+| 4.64s | Anticipation fires (p=0.50) | *"10 companies. That let you teach English"* | "...1. Cambly 2. italki 3. Verbling 4. Preply..." — **committed** ✓ |
+| 6.00s | VAD confirms end-of-turn | Full transcript | Committed audio replayed; continuation LLM first token at 6.32s |
 
-The bot's first audio chunk was ready at **5.36s** — 0.64s before VAD triggered at 6.0s. From the user's perspective the response begins at turn end with no perceptible latency, because the speculative audio was already buffered and waiting.
+The bot's first audio chunk was ready at **5.36s** — 0.64s before VAD triggered at 6.0s. Compared to the baseline where LLM and TTS only start after VAD, the speculative response begins with no perceptible latency.
