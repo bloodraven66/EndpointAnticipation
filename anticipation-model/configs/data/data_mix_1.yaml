@@ -1,0 +1,67 @@
+data:
+  modes: [train, val] #keep this fixed
+  
+  datasets:
+    # spokenwoz:    
+    #     raw_path: /mnt/matylda4/udupa/data/SpokenWOZ/
+    #     sr: 8000
+    #     channels:
+    #       separate: true
+    #       preserve: all
+    #       save_path: "{dump_path}/spokenwoz_separate_channels/{fname}"
+    #     num_samples: 
+    #       train: 1000
+    #       val: 100
+    fisher:
+        raw_path: /mnt/matylda2/data/FISHER/
+        sr: 8000
+        channels:
+          separate: true
+          preserve: all
+          save_path: "{dump_path}/fisher_separate_channels/{fname}"
+        # num_samples: 
+          # train: 1000
+          # val: 100
+    # librispeech:
+    #     raw_path: /mnt/matylda4/udupa/data/LibriSpeech/raw_dataset/
+    #     sr: 16000
+    #     train_splits: [train-clean-100]
+    #     eval_splits: [dev-clean]
+    #     test_splits: [test-clean]
+    #     create_session_recordings: true
+    #     join_silence_range: [0.5, 2] #seconds
+    #     session_recordings_path: "{dump_path}/librispeech_session_recordings"
+    
+    
+    # humdial:
+    #   raw_path: /mnt/matylda4/udupa/data/HumDial/
+    #   sr: 16000
+    #   languages: [en] #dataset has en and zh
+    # mlc:
+    #   raw_path: /mnt/matylda2/data/MLC-SLM/
+    #   sr: 16000
+    #   languages: [en] #dataset has en, fr, de, it, kr, jn, pt, ru, es, th, vi      
+  
+  save_paths:
+    dump: /mnt/matylda4/udupa/data/dump/endpointing/
+    preprocessed_data_path: "{dataset}/preprocessed_{mode}.json"
+    vad_data_path: "{dataset}/vad_processed_{mode}.json"
+    processed_data_path: "{dataset}/processed_{mode}.json"
+    filtered_data_path: "{dataset}/filtered_{mode}_context_{context_in_sec}_offset_{extra_offset}.json"
+    resampled_audios_path: "{dataset}/resampled_audios_{mode}_target_sr_{target_sr}"
+  
+  override_preprocessed_data: [] ##fill this with dataset names to override
+  override_vad_data: []
+  override_processed_data: [spokenwoz, librispeech, humdial, mlc]
+  override_filtered_data: [spokenwoz, librispeech, humdial, mlc]
+
+  num_vad_workers: 64
+  num_resample_workers: 64
+
+  special_tokens:
+    system_end: <system_end>
+    user_end: <user_end>
+    system: system
+    user: user
+  
+  text_delim: "_##_"

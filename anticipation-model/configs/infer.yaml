@@ -1,0 +1,40 @@
+data:
+  modes: [test]
+  datasets:
+    spokenwoz:    
+        raw_path: /mnt/matylda4/udupa/data/SpokenWOZ/
+        sr: 8000
+        channels:
+          separate: true
+          preserve: all
+          save_path: "{dump_path}/spokenwoz_separate_channels/{fname}"
+    switchboard:    
+        raw_path: /mnt/matylda3/karafiat/BABEL/GIT/Babel-Kaldi/egs/fisher_swbd/s5/data/
+        sr: 8000
+        channels:
+          separate: true
+          preserve: all
+          save_path: "{dump_path}/switchboard_separate_channels/{fname}"
+        filter_out_keyword: FISHER
+        filter_keyword: sw
+        min_words_per_turn: 4
+
+infer_params:
+  device: cuda
+  batch_size: 1
+  root_path: /mnt/matylda4/
+  checkpoint_folder: udupa/exps/endpointing//NAC-LD-Endpointer/checkpoints
+  infer_single_sample: false
+  score_turns: [user]
+  threshold_range: [0.05, 0.7, 40]
+  infer_accuracy_collar_frames: 1
+  reset_resample: False
+  num_infer_pred_imgs: 1
+  infer_checkpoint_name: best_val_acc.pt   
+  min_turn_length: 1
+
+wandb:
+  run_name: lstm_mimi-12.5hz-nq2_2M_BS64_LR0.001_40sec-user1.0
+  wandb_project: smart_endpointing
+  use_wandb: False
+

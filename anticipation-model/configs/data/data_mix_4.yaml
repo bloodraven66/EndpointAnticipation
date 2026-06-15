@@ -1,0 +1,47 @@
+data:
+  modes: [train, val] #keep this fixed
+  
+  datasets:
+    spokenwoz:    
+        raw_path: /mnt/matylda4/udupa/data/SpokenWOZ/
+        sr: 8000
+        channels:
+          separate: true
+          preserve: all
+          save_path: "{dump_path}/spokenwoz_separate_channels/{fname}"
+
+    switchboard:    
+        raw_path: /mnt/matylda3/karafiat/BABEL/GIT/Babel-Kaldi/egs/fisher_swbd/s5/data/
+        sr: 8000
+        channels:
+          separate: true
+          preserve: all
+          save_path: "{dump_path}/switchboard_separate_channels/{fname}"
+        filter_out_keyword: FISHER
+        filter_keyword: sw
+        min_words_per_turn: 4
+        
+  save_paths:
+    # dump: /mnt/matylda4/udupa/data/dump/endpointing/
+    dump: /mnt/scratch/tmp/udupa/dump/endpointing/
+    preprocessed_data_path: "{dataset}/preprocessed_{mode}.json"
+    vad_data_path: "{dataset}/vad_processed_{mode}.json"
+    processed_data_path: "{dataset}/processed_{mode}.json"
+    filtered_data_path: "{dataset}/filtered_{mode}_context_{context_in_sec}_offset_{extra_offset}.json"
+    resampled_audios_path: "{dataset}/resampled_audios_{mode}_target_sr_{target_sr}"
+  
+  override_preprocessed_data: [] ##fill this with dataset names to override
+  override_vad_data: []
+  override_processed_data: [librispeech, humdial, mlc]
+  override_filtered_data: [librispeech, humdial, mlc]
+
+  num_vad_workers: 64
+  num_resample_workers: 64
+
+  special_tokens:
+    system_end: <system_end>
+    user_end: <user_end>
+    system: system
+    user: user
+  
+  text_delim: "_##_"
