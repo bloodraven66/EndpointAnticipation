@@ -204,7 +204,7 @@ def run_inference(
             predictions.append({
                 "time_s": round(frame_time, 4),
                 "probability": round(prob_val, 4),
-                "endpoint_detected": prob_val >= threshold,
+                "endpoint_anticipated": prob_val >= threshold,
             })
 
     return predictions
@@ -288,7 +288,7 @@ def main():
     logger.info("Running streaming inference on %.2f seconds of audio", len(user_audio) / target_sr)
     predictions = run_inference(mimi, model, user_audio, system_audio, device, args.threshold, target_sr)
 
-    detected = [p for p in predictions if p["endpoint_detected"]]
+    detected = [p for p in predictions if p["endpoint_anticipated"]]
     logger.info("Inference complete: %d frames, %d endpoint detections", len(predictions), len(detected))
 
     result = {
