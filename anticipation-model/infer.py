@@ -253,7 +253,7 @@ def plot_predictions(
     star_times = times[1:][rising]
     star_probs = probs[1:][rising]
     if len(star_times):
-        ax_prob.scatter(star_times, star_probs, marker="*", color="#FF9800", s=120, zorder=5, label="Anticipated")
+        ax_prob.scatter(star_times, np.full_like(star_times, threshold), marker="*", color="#FF9800", s=120, zorder=5, label="Anticipated")
 
     ax_prob.set_ylabel("Anticipation probability", color="#4CAF50")
     ax_prob.tick_params(axis="y", labelcolor="#4CAF50")
