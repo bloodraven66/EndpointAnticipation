@@ -222,13 +222,18 @@ def plot_predictions(
     target_sr: int,
     threshold: float,
     save_path: str,
+    audio_name: str = "",
 ) -> None:
     times = np.array([p["time_s"] for p in predictions])
     probs = np.array([p["probability"] for p in predictions])
     audio_times = np.arange(len(user_audio)) / target_sr
     duration = audio_times[-1]
 
+    stream_info = "2-channel (user + system)" if system_audio is not None else "mono (user only)"
+    title = f"{audio_name}  |  {stream_info}  |  threshold={threshold}"
+
     fig, ax_audio = plt.subplots(figsize=(14, 3))
+    ax_audio.set_title(title, fontsize=9)
 
     # Waveforms
     ax_audio.plot(audio_times, user_audio, color="#2196F3", alpha=0.45, linewidth=0.6, label="User")
@@ -334,7 +339,7 @@ def main():
 
     if args.plot:
         plot_path = os.path.join(args.output_dir, f"{stem}_plot.png")
-        plot_predictions(predictions, user_audio, system_audio, target_sr, args.threshold, plot_path)
+        plot_predictions(predictions, user_audio, system_audio, target_sr, args.threshold, plot_path, audio_name=stem)
 
 
 if __name__ == "__main__":
